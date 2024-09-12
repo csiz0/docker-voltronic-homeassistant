@@ -19,9 +19,11 @@ services:
 
     volumes:
         - ./config/:/etc/inverter/
+        - ./sources/inverter-mqtt/:/opt/inverter-mqtt/
 
     devices:
     #  - "/dev/mem:/dev/mem"
+      - /sys/devices/w1_bus_master1/28-00f28e000003/temperature:/sys/devices/w1_bus_master1/28-00f28e000003/temperature:ro
 
     # USB Port Mapping
       - /dev/bus/usb:/dev/bus/usb:rwm

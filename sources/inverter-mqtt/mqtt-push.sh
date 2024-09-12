@@ -17,7 +17,7 @@ if [[ $INFLUX_ENABLED == "true" ]] ; then
     INFLUX_DEVICE=`cat /etc/inverter/mqtt.json | jq '.influx.device' -r`
     INFLUX_PREFIX=`cat /etc/inverter/mqtt.json | jq '.influx.prefix' -r`
     INFLUX_DATABASE=`cat /etc/inverter/mqtt.json | jq '.influx.database' -r`
-    INFLUX_MEASUREMENT_NAME=`cat /etc/inverter/mqtt.json | jq '.influx.namingMap.'$1'' -r`
+#    INFLUX_MEASUREMENT_NAME=`cat /etc/inverter/mqtt.json | jq '.influx.namingMap.'$1'' -r`
 fi
 
 pushMQTTData () {
@@ -38,7 +38,21 @@ pushMQTTData () {
 }
 
 pushInfluxData () {
+    INFLUX_MEASUREMENT_NAME=`cat /etc/inverter/mqtt.json | jq '.influx.namingMap.'$1'' -r`
+
+#    echo curl -i -XPOST "$INFLUX_HOST/write?db=$INFLUX_DATABASE&precision=s" -u "$INFLUX_USERNAME:$INFLUX_PASSWORD" --data-binary "$INFLUX_PREFIX,device=$INFLUX_DEVICE $INFLUX_MEASUREMENT_NAME=$2"
     curl -i -XPOST "$INFLUX_HOST/write?db=$INFLUX_DATABASE&precision=s" -u "$INFLUX_USERNAME:$INFLUX_PASSWORD" --data-binary "$INFLUX_PREFIX,device=$INFLUX_DEVICE $INFLUX_MEASUREMENT_NAME=$2"
+
+
+}
+
+pushInfluxTemp () {
+    INFLUX_TEMP=`cat /sys/devices/w1_bus_master1/28-00f28e000003/temperature`
+    T=$(printf "%.2f\n" $((10**2 * INFLUX_TEMP/1000))e-2)
+    #echo $INFLUX_TEMP
+    #echo $T
+
+    curl -i -XPOST "$INFLUX_HOST/write?db=$INFLUX_DATABASE&precision=s" -u "$INFLUX_USERNAME:$INFLUX_PASSWORD" --data-binary "$INFLUX_PREFIX,device=$INFLUX_DEVICE Temperature=$T"
 }
 
 ###############################################################################
@@ -51,3 +65,5 @@ eval "declare -A INVERTER_DATA=($BASH_HASH)"
 for key in "${!INVERTER_DATA[@]}"; do
     pushMQTTData "$key" "${INVERTER_DATA[$key]}"
 done
+
+pushInfluxTemp
