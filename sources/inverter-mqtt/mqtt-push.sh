@@ -53,6 +53,8 @@ pushInfluxTemp () {
     #echo $T
 
     curl -i -XPOST "$INFLUX_HOST/write?db=$INFLUX_DATABASE&precision=s" -u "$INFLUX_USERNAME:$INFLUX_PASSWORD" --data-binary "$INFLUX_PREFIX,device=$INFLUX_DEVICE Temperature=$T"
+
+    pushMQTTData "External_temperature" "$T"
 }
 
 ###############################################################################

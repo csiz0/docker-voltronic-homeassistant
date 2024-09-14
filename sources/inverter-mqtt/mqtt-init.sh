@@ -121,6 +121,7 @@ registerModeTopic "Charging_to_floating_mode" "" "solar-power" "None" "Charging 
 registerModeTopic "Dustproof_installed" "" "solar-power" "None" "Dustproof installed" # 1-dustproof installed,0-no dustproof
 registerModeTopic "Eeprom_version" "" "power" "None" "Eeprom version"
 registerTopic "Heatsink_temperature" "°C" "details" "temperature" "Heatsink temperature"
+registerTopic "External_temperature" "°C" "details" "temperature" "External temperature"
 registerModeTopic "Load_pct" "%" "brightness-percent" "None" "Load pct"
 registerModeTopic "Load_status_on" "" "power" "None" "Load status on"
 registerTopic "Load_va" "VA" "chart-bell-curve" "apparent_power" "Load va"
